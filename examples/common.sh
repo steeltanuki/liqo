@@ -3,6 +3,7 @@
 set -e           # Fail in case of error
 set -o nounset   # Fail if undefined variables are used
 set -o pipefail  # Fail if one of the piped commands fails
+set -x
 
 function setup_colors() {
     # Only use colors if connected to a terminal
@@ -47,7 +48,25 @@ function success() {
     echo -e "${GREEN}${BOLD}SUCCESS${RESET}\t$1"
 }
 
+function check_cluster_command() {
+  if [ "$1" != "kind" ] && [ "$1" != "k3d" ]; then
+        error "Unknown cluster command type (must be one of 'kind' or 'k3d'): $1"
+        exit 1
+    fi
+}
+
+
 function check_requirements() {
+
+    local cluster_command="${1:-kind}"
+    local cluster_command_reference="https://kind.sigs.k8s.io/docs/user/quick-start/#installation"
+
+    check_cluster_command "$cluster_command"
+
+    if [ "$cluster_command" = "k3d" ]; then
+        cluster_command_reference="https://k3d.io/stable/#installation"
+    fi
+
     if ! command -v docker &> /dev/null;
     then
         error "Docker engine could not be found on your system. Please install docker engine to continue: https://docs.docker.com/get-docker/"
@@ -66,9 +85,9 @@ function check_requirements() {
         exit 1
     fi
 
-    if ! command -v kind &> /dev/null;
+    if ! command -v $cluster_command &> /dev/null;
     then
-        error "Kind could not be found on your system. Please install kind to continue: https://kind.sigs.k8s.io/docs/user/quick-start/#installation"
+        error "$cluster_command could not be found on your system. Please install $cluster_command to continue: $cluster_command_reference"
         exit 1
     fi
 
@@ -88,7 +107,19 @@ function check_requirements() {
     done
 }
 
-function delete_clusters() {
+function delete_clusters() {  
+    
+    if [ "$1" = "k3d" ]; then
+        delete_k3d_clusters ${@:2}
+    elif [ "$1" = "kind" ]; then
+        delete_kind_clusters ${@:2}
+    else
+        delete_kind_clusters ${@}
+    fi
+}
+
+
+function delete_kind_clusters() {
     for cluster in "$@"; do
         info "Ensuring that no cluster \"$cluster\" is running..."
         kind delete cluster --name "$cluster" > /dev/null 2>&1
@@ -97,6 +128,16 @@ function delete_clusters() {
 }
 
 function create_cluster() {
+    if [ "$1" = "k3d" ]; then
+        create_k3d_cluster ${@:2}
+    elif [ "$1" = "kind" ]; then
+        create_kind_cluster ${@:2}
+    else
+        create_kind_cluster ${@}
+    fi
+}
+
+function create_kind_cluster() {
     local name="$1"
     local kubeconfig="$2"
     local config="$3"
@@ -162,11 +203,23 @@ function delete_k3d_clusters() {
 }
 
 function create_k3d_cluster() {
-    local name="$1"
-    local config="$2"
+    if [ $# -eq 2 ]; then
+        local name="$1"
+        local config="$2"
+    elif [ $# -eq 3 ]; then
+        local name="$1"
+        local kubeconfig="$2"
+        local config="$3"
+    else
+        error "Invalid number of arguments for create_k3d_cluster"
+        exit 1
+    fi
 
     info "Creating cluster \"$name\"..."
-    fail_on_error "k3d cluster create -c $config --kubeconfig-update-default=false" "Failure to create cluster \"${name}\""
+    fail_on_error "k3d cluster create $name -c $config --kubeconfig-update-default=false" "Failure to create cluster \"${name}\""
+    if [ -n "$kubeconfig" ]; then
+        k3d kubeconfig write $name --overwrite -o $kubeconfig  
+    fi
     success_clear_line "Cluster \"$name\" has been created."
 }
 
