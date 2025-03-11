@@ -326,7 +326,7 @@ func (c *Cluster) checkTemplateServerServiceNodePort(template *unstructured.Unst
 		// If the field is missing, it might be optional (represented by leading ?). If not, raise an error
 		if _, errOptional := maps.GetNestedField(port, "?nodePort"); errOptional != nil {
 			return fmt.Errorf("unable to get spec.template.spec.service.spec.ports[0].nodePort int the server template, " +
-				"since you specified the flag \"--server-service-nodeport\" you need to add the \"nodePort\" field in the template")
+				"since you specified the flag \"--gw-server-service-nodeport\" you need to add the \"nodePort\" field in the template")
 		}
 	}
 
@@ -343,7 +343,7 @@ func (c *Cluster) checkTemplateServerServiceLoadBalancer(template *unstructured.
 		// If the field is missing, it might be optional (represented by leading ?). If not, raise an error
 		if _, errOptional := maps.GetNestedField(template.Object, fmt.Sprintf("%s.?loadBalancerIP", servicePath)); errOptional != nil {
 			return fmt.Errorf("unable to get %s of the server template, "+
-				"since you specified the flag \"--server-service-loadbalancerip\" you need to add the \"loadBalancerIP\" field in the template", servicePath)
+				"since you specified the flag \"--gw-server-service-loadbalancerip\" you need to add the \"loadBalancerIP\" field in the template", servicePath)
 		}
 	}
 	return nil
@@ -514,11 +514,11 @@ func (c *Cluster) EnsurePublicKey(ctx context.Context, remoteClusterID liqov1bet
 
 // DeleteConfiguration deletes a Configuration.
 // If tenantNamespace is empty this function searches in all the namespaces in the cluster.
-func (c *Cluster) DeleteConfiguration(ctx context.Context, remoteClusterID liqov1beta1.ClusterID, tenantNs string) error {
+func (c *Cluster) DeleteConfiguration(ctx context.Context, remoteClusterID liqov1beta1.ClusterID, namespace string) error {
 	s := c.local.Printer.StartSpinner("Deleting network configuration")
 
 	// Retrieve Configuration.
-	conf, err := getters.GetConfigurationByClusterID(ctx, c.local.CRClient, remoteClusterID, tenantNs)
+	conf, err := getters.GetConfigurationByClusterID(ctx, c.local.CRClient, remoteClusterID, namespace)
 	if client.IgnoreNotFound(err) != nil {
 		s.Fail("An error occurred while retrieving network configuration: ", output.PrettyErr(err))
 		return err
