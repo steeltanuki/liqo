@@ -3,7 +3,7 @@
 set -e           # Fail in case of error
 set -o nounset   # Fail if undefined variables are used
 set -o pipefail  # Fail if one of the piped commands fails
-set -x
+
 
 function setup_colors() {
     # Only use colors if connected to a terminal
@@ -217,7 +217,7 @@ function create_k3d_cluster() {
 
     info "Creating cluster \"$name\"..."
     fail_on_error "k3d cluster create $name -c $config --kubeconfig-update-default=false" "Failure to create cluster \"${name}\""
-    if [ -n "$kubeconfig" ]; then
+    if [ -v kubeconfig ]; then
         k3d kubeconfig write $name --overwrite -o $kubeconfig  
     fi
     success_clear_line "Cluster \"$name\" has been created."
