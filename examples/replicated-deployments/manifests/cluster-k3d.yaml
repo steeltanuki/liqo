@@ -1,0 +1,15 @@
+apiVersion: k3d.io/v1alpha3
+kind: Simple
+image: docker.io/rancher/k3s:v1.30.2-k3s2
+agents: 0
+servers: 1
+network: k3d-action-bridge-network
+options:
+  k3s:
+    extraArgs:
+      - arg: --cluster-cidr=10.42.0.0/16
+        nodeFilters:
+          - server:*
+      - arg: --service-cidr=10.43.0.0/16
+        nodeFilters:
+          - server:*
