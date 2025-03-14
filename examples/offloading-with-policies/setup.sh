@@ -43,9 +43,9 @@ if [ "$CLUSTER_COMMAND" = "k3d" ]; then
     install_liqo_k3d "$CLUSTER_NAME_2" "$KUBECONFIG_2" "10.42.0.0/16" "10.43.0.0/16" "topology.liqo.io/region=center"
     install_liqo_k3d "$CLUSTER_NAME_3" "$KUBECONFIG_3" "10.42.0.0/16" "10.43.0.0/16" "topology.liqo.io/region=south"
 else
-    install_liqo $CLUSTER_COMMAND "$CLUSTER_NAME_1" "$KUBECONFIG_1" "topology.liqo.io/region=north"
-    install_liqo $CLUSTER_COMMAND "$CLUSTER_NAME_2" "$KUBECONFIG_2" "topology.liqo.io/region=center"
-    install_liqo $CLUSTER_COMMAND "$CLUSTER_NAME_3" "$KUBECONFIG_3" "topology.liqo.io/region=south"
+    install_liqo "$CLUSTER_NAME_1" "$KUBECONFIG_1" "topology.liqo.io/region=north"
+    install_liqo "$CLUSTER_NAME_2" "$KUBECONFIG_2" "topology.liqo.io/region=center"
+    install_liqo "$CLUSTER_NAME_3" "$KUBECONFIG_3" "topology.liqo.io/region=south"
 fi
 
 
