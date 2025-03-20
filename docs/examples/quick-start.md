@@ -12,12 +12,22 @@ Each cluster is made of two nodes (one for the control plane and one as a simple
 
 {{ env.config.html_context.generate_clone_example('quick-start') }}
 
+If you are using k3d you must specify the Kubernetes provider inside when launching the setup script:
+
+{{ env.config.html_context.generate_clone_example('quick-start', 'k3d') }}
+
 ### Explore the playground
 
 You can inspect the deployed clusters by typing:
 
 ```bash
 kind get clusters
+```
+
+or (if you are using k3d):
+
+```bash
+k3d cluster list
 ```
 
 You should see a couple of entries:
@@ -27,7 +37,7 @@ milan
 rome
 ```
 
-This means that two KinD clusters are deployed and running on your host.
+This means that two clusters are deployed and running on your host.
 
 Then, you can simply inspect the status of the clusters.
 To do so, you can export the `KUBECONFIG` variable to specify the identity file for *kubectl* and *liqoctl*, and then contact the cluster.
@@ -86,12 +96,23 @@ You can install Liqo on the *Rome* cluster by launching:
 liqoctl install kind --cluster-id rome
 ```
 
+or (if you are using k3d):
+
+```bash
+liqoctl install k3s --cluster-id rome
+```
+
 This command will generate the suitable configuration for your KinD cluster and then install Liqo.
 
 Similarly, you can install Liqo on the *Milan* cluster by launching:
 
 ```bash
 liqoctl install kind --cluster-id milan --kubeconfig "$KUBECONFIG_MILAN"
+```
+or (if you are using k3d):
+
+```bash
+liqoctl install k3s --cluster-id milan --kubeconfig "$KUBECONFIG_MILAN"
 ```
 
 On both clusters, you should see the following output:
