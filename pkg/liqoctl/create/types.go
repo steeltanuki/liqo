@@ -21,6 +21,7 @@ import (
 
 	"github.com/liqotech/liqo/pkg/liqoctl/factory"
 	"github.com/liqotech/liqo/pkg/liqoctl/rest"
+	"github.com/liqotech/liqo/pkg/liqoctl/utils"
 )
 
 // NewCreateCommand returns the cobra command for the create subcommand.
@@ -44,7 +45,7 @@ func NewCreateCommand(ctx context.Context, liqoResources []rest.APIProvider, f *
 
 		apiOptions := api.APIOptions()
 		if apiOptions.EnableCreate {
-			cmd.AddCommand(api.Create(ctx, options))
+			utils.AddCommand(cmd, api.Create(ctx, options))
 		}
 	}
 

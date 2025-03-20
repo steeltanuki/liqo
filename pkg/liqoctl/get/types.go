@@ -21,6 +21,7 @@ import (
 
 	"github.com/liqotech/liqo/pkg/liqoctl/factory"
 	"github.com/liqotech/liqo/pkg/liqoctl/rest"
+	"github.com/liqotech/liqo/pkg/liqoctl/utils"
 )
 
 // NewGetCommand returns the cobra command for the get subcommand.
@@ -43,7 +44,7 @@ func NewGetCommand(ctx context.Context, liqoResources []rest.APIProvider, f *fac
 
 		apiOptions := api.APIOptions()
 		if apiOptions.EnableGet {
-			cmd.AddCommand(api.Get(ctx, options))
+			utils.AddCommand(cmd, api.Get(ctx, options))
 		}
 	}
 
