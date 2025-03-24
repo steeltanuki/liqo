@@ -11,9 +11,15 @@ The deployed application will be replicated on all *destination clusters* in ord
 
 First, make sure that the [requirements](/examples/requirements.md) for Liqo are satisfied.
 
-Then, let's open a terminal on your machine and launch the following script, which creates the three above-mentioned clusters with KinD and installs Liqo on all of them.
+Then, let's open a terminal on your machine and launch the following scripts, which creates the three above-mentioned clusters and installs Liqo on all of them.
+
+if you are using KinD you must use the following script:
 
 {{ env.config.html_context.generate_clone_example('replicated-deployments') }}
+
+if you are using k3d you must use the following script:
+
+{{ env.config.html_context.generate_clone_example('replicated-deployments', 'k3d') }}
 
 Export the kubeconfigs environment variables to use them in the rest of the tutorial:
 
@@ -193,10 +199,19 @@ By default the Liqo CRDs will remain in the cluster, but they can be removed wit
 
 ### Destroy clusters
 
-To teardown the KinD clusters, you can issue:
+If you are using KinD you can issue the following command to teardown the clusters:
 
 ```bash
 kind delete cluster --name origin
 kind delete cluster --name europe-rome-edge
 kind delete cluster --name europe-milan-edge
 ```
+
+If you are using k3d you can issue the following command to teardown the clusters:
+
+```bash
+k3d cluster delete origin
+k3d cluster delete europe-rome-edge
+k3d cluster delete europe-milan-edge
+```
+

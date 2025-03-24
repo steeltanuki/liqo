@@ -10,10 +10,16 @@ Then, you will offload a given namespace (and the applications contained therein
 
 First, check that you are compliant with the [requirements](/examples/requirements.md).
 
-Then, let's open a terminal on your machine and launch the following script, which creates the three above-mentioned clusters with KinD and installs Liqo on all of them.
+Then, let's open a terminal on your machine and launch the following scripts, which creates the three above-mentioned clusters and installs Liqo on all of them.
 Each cluster is made by a single combined control-plane + worker node.
 
+if you are using KinD you must use the following script:
+
 {{ env.config.html_context.generate_clone_example('offloading-with-policies') }}
+
+if you are using k3d you must use the following script:
+
+{{ env.config.html_context.generate_clone_example('offloading-with-policies', 'k3d') }}
 
 Export the kubeconfigs environment variables to use them in the rest of the tutorial:
 
@@ -234,10 +240,18 @@ liqoctl uninstall --kubeconfig="$KUBECONFIG_NAPLES" --purge
 
 ### Destroy clusters
 
-To teardown the KinD clusters, you can issue:
+If you are using KinD you can issue the following command to teardown the clusters:
 
 ```bash
 kind delete cluster --name venice
 kind delete cluster --name florence
 kind delete cluster --name naples
+```
+
+If you are using k3d you can issue the following command to teardown the clusters:
+
+```bash
+k3d cluster delete venice
+k3d cluster delete florence
+k3d cluster delete naples
 ```

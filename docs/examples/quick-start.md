@@ -12,7 +12,7 @@ Each cluster is made of two nodes (one for the control plane and one as a simple
 
 {{ env.config.html_context.generate_clone_example('quick-start') }}
 
-If you are using k3d you must specify the Kubernetes provider inside when launching the setup script:
+If you are using k3d you must specify the Kubernetes provider when launching the setup script:
 
 {{ env.config.html_context.generate_clone_example('quick-start', 'k3d') }}
 
@@ -102,7 +102,7 @@ or (if you are using k3d):
 liqoctl install k3s --cluster-id rome
 ```
 
-This command will generate the suitable configuration for your KinD cluster and then install Liqo.
+These command will generate the suitable configuration for your cluster and then install Liqo.
 
 Similarly, you can install Liqo on the *Milan* cluster by launching:
 
@@ -516,9 +516,16 @@ liqoctl uninstall --purge --kubeconfig="$KUBECONFIG_MILAN"
 
 ### Destroy clusters
 
-To teardown the KinD clusters, you can issue:
+If you are using KinD you can issue the following command to teardown the clusters:
 
 ```bash
 kind delete cluster --name rome
 kind delete cluster --name milan
+```
+
+If you are using k3d you can issue the following command to teardown the clusters:
+
+```bash
+k3d cluster delete rome
+k3d cluster delete milan
 ```

@@ -7,10 +7,16 @@ In particular, you will deploy a multi-master *mariadb-galera* database across a
 
 First, check that you are compliant with the [requirements](/examples/requirements.md).
 
-Then, let's open a terminal on your machine and launch the following script, which creates the two above-mentioned clusters with KinD and installs Liqo on them.
+Then, let's open a terminal on your machine and launch the following script, which creates the two above-mentioned clusters and installs Liqo on them.
 Each cluster is made by a single combined control-plane + worker node.
 
+if you are using KinD you must use the following script:
+
 {{ env.config.html_context.generate_clone_example('stateful-applications') }}
+
+if you are using k3d you must use the following script:
+
+{{ env.config.html_context.generate_clone_example('stateful-applications', 'k3d') }}
 
 Export the kubeconfigs environment variables to use them in the rest of the tutorial:
 
@@ -218,9 +224,16 @@ liqoctl uninstall --kubeconfig="$KUBECONFIG_LYON" --purge
 
 ### Destroy clusters
 
-To teardown the KinD clusters, you can issue:
+If you are using KinD you can issue the following command to teardown the clusters:
 
 ```bash
 kind delete cluster --name turin
 kind delete cluster --name lyon
+```
+
+If you are using k3d you can issue the following command to teardown the clusters:
+
+```bash
+k3d cluster delete turin
+k3d cluster delete lyon
 ```

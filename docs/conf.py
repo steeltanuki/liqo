@@ -174,7 +174,7 @@ def generate_link_to_repo(text: str, file_path: str) -> str:
 # generate_clone_example generates the clone and checkout code for the given example.
 def generate_clone_example(example_name: str, provider: str = None) -> str:
     version = generate_version()
-    provider_arg = f" {provider}" if provider else ""
+    provider_arg = f"{provider}" if provider else ""
     return f"```bash\n\
 git clone https://github.com/liqotech/liqo.git\n\
 cd liqo\n\
